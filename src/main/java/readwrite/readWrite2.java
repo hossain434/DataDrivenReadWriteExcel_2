@@ -1,0 +1,69 @@
+package readwrite;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class readWrite2 {
+	@SuppressWarnings({ "deprecation", "resource" })
+	public static void main(String[] args) throws IOException {
+		// Get the excel file and create an input stream for excel
+		FileInputStream fis = new FileInputStream(
+				"C:\\Users\\ahoss1\\Desktop\\Workspace\\sankar_frame\\readwrite2\\Age_Validation.xlsx");
+
+		// load the input stream to a workbook object
+		// Use XSSF for (.xlsx) excel file and HSSF (.xls) excel file
+		XSSFWorkbook wb = new XSSFWorkbook(fis);
+
+		// get the sheet from the workbook by index
+		XSSFSheet sheet = wb.getSheet("Age");
+		// count the total number of rows present in the sheet
+		int rowcount = sheet.getLastRowNum();
+		System.out.println("Total number of rows present in the sheet : " + rowcount);
+		// get the column count in the sheet
+		int colcount = sheet.getRow(1).getLastCellNum();
+		System.out.println("Total number of column present in the sheet :" + colcount);
+		// get the data form sheet by iterating through cells
+		// by using for loop
+		for (int i = 1; i <= rowcount; i++) {
+			XSSFCell cell = sheet.getRow(1).getCell(1);
+			String celltext = "";
+			// Get celltype values
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				celltext = cell.getStringCellValue();
+
+			} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				celltext = String.valueOf(cell.getNumericCellValue());
+			} else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+				celltext = "";
+			}
+
+			// check the age and set the Cell value into excel
+			if (Double.parseDouble(celltext) >= 18) {
+				sheet.getRow(i).getCell(2).setCellValue("Major");
+
+			}
+
+			else {
+				sheet.getRow(i).getCell(2).setCellValue("Minor");
+			}
+		} // end of the loop
+			// close the file input stream
+
+		fis.close();
+
+		// Open an excel to write data into workbook
+		FileOutputStream fos = new FileOutputStream(
+				"C:\\Users\\ahoss1\\Desktop\\Workspace\\sankar_frame\\readwrite2\\Age_Validation.xlsx");
+
+		// Write into workbook
+		wb.write(fos);
+		// close fileoutputstream
+		fos.close();
+	}
+
+}
